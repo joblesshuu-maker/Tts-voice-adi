@@ -55,18 +55,17 @@ Then run the following commands, using anaconda prompt as the terminal (or any o
 This will:
 1. create conda environment with minimal dependencies specified
 1. activate the environment
-1. install pytorch with the command provided here: https://pytorch.org/get-started/locally/
 1. clone tortoise-tts
 1. change the current directory to tortoise-tts
+1. install required dependencies via requirements.txt
 1. run tortoise python setup install script
 
 ```shell
-conda create --name tortoise python=3.9 numba inflect
+conda create --name tortoise python=3.11
 conda activate tortoise
-conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
-conda install transformers=4.29.2
 git clone https://github.com/neonbjb/tortoise-tts.git
 cd tortoise-tts
+pip install -r requirements.txt
 python setup.py install
 ```
 
