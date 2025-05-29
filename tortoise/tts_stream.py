@@ -3,7 +3,6 @@ import os
 from time import time
 
 import torch
-import torchaudio
 
 from api_fast import TextToSpeech, MODELS_DIR
 from utils.audio import load_audio, load_voices

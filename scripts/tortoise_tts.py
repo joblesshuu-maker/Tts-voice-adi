@@ -8,9 +8,8 @@ import time
 
 import torch
 import torchaudio
-
 from tortoise.api import MODELS_DIR, TextToSpeech
-from tortoise.utils.audio import get_voices, load_voices, load_audio
+from tortoise.utils.audio import get_voices, load_audio, load_voices
 from tortoise.utils.text import split_and_recombine_text
 
 parser = argparse.ArgumentParser(
