@@ -27,9 +27,9 @@ setuptools.setup(
         'unidecode',
         'scipy',
         'librosa',
-        'transformers==4.31.0',
-        'tokenizers==0.14.0',
-        'scipy==1.13.1'
+        'transformers==4.53.3',
+        'tokenizers',
+        'scipy==1.16.1'
         # 'deepspeed==0.8.3',
     ],
     classifiers=[
@@ -37,5 +37,5 @@ setuptools.setup(
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.13",
 )
