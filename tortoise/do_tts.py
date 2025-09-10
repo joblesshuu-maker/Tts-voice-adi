@@ -4,8 +4,8 @@ import os
 import torch
 import torchaudio
 
-from api import TextToSpeech, MODELS_DIR
-from utils.audio import load_voices
+from tortoise.api import TextToSpeech, MODELS_DIR
+from tortoise.utils.audio import load_voice, load_voices
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
