@@ -44,7 +44,7 @@ def expand_abbreviations(text):
 _inflect = inflect.engine()
 _comma_number_re = re.compile(r'([0-9][0-9\,]+[0-9])')
 _decimal_number_re = re.compile(r'([0-9]+\.[0-9]+)')
-_pounds_re = re.compile(r'£([0-9\,]*[0-9]+)')
+_pounds_re = re.compile(r'£([0-9\,]*[0-9]+(?:\.[0-9]+)?)')
 _dollars_re = re.compile(r'\$([0-9\.\,]*[0-9]+)')
 _ordinal_re = re.compile(r'[0-9]+(st|nd|rd|th)')
 _number_re = re.compile(r'[0-9]+')
@@ -79,6 +79,33 @@ def _expand_dollars(m):
     return 'zero dollars'
 
 
+def _expand_pounds(m):
+  match = m.group(1).replace(',', '')
+  parts = match.split('.')
+  if len(parts) > 2:
+    return match + ' pounds'
+  pounds = int(parts[0]) if parts[0] else 0
+  pence = 0
+  if len(parts) > 1 and parts[1]:
+    pence_text = parts[1]
+    pence = int(pence_text)
+    # A single digit is tenths of a pound, so £1.5 is 50 pence.
+    if len(pence_text) == 1:
+      pence *= 10
+  if pounds and pence:
+    pound_unit = 'pound' if pounds == 1 else 'pounds'
+    pence_unit = 'penny' if pence == 1 else 'pence'
+    return '%s %s, %s %s' % (pounds, pound_unit, pence, pence_unit)
+  elif pounds:
+    pound_unit = 'pound' if pounds == 1 else 'pounds'
+    return '%s %s' % (pounds, pound_unit)
+  elif pence:
+    pence_unit = 'penny' if pence == 1 else 'pence'
+    return '%s %s' % (pence, pence_unit)
+  else:
+    return 'zero pounds'
+
+
 def _expand_ordinal(m):
   return _inflect.number_to_words(m.group(0))
 
@@ -100,7 +127,7 @@ def _expand_number(m):
 
 def normalize_numbers(text):
   text = re.sub(_comma_number_re, _remove_commas, text)
-  text = re.sub(_pounds_re, r'\1 pounds', text)
+  text = re.sub(_pounds_re, _expand_pounds, text)
   text = re.sub(_dollars_re, _expand_dollars, text)
   text = re.sub(_decimal_number_re, _expand_decimal_point, text)
   text = re.sub(_ordinal_re, _expand_ordinal, text)
@@ -141,6 +168,8 @@ def transliteration_cleaners(text):
 
 def english_cleaners(text):
   '''Pipeline for English text, including number and abbreviation expansion.'''
+  # unidecode turns £ into "PS" and glues it to the amount. Expand pounds first.
+  text = re.sub(_pounds_re, _expand_pounds, text)
   text = convert_to_ascii(text)
   text = lowercase(text)
   text = expand_numbers(text)
